@@ -48,12 +48,15 @@
     <Compile Include="Entities\Agents\FootSoldier.cs" />
     <Compile Include="Entities\Agents\SquadLeader.cs" />
     <Compile Include="Entities\Sensors\AudioSensor.cs" />
+    <Compile Include="Entities\Sensors\MagneticSensor.cs" />
+    <Compile Include="Entities\Sensors\MotionSensor.cs" />
     <Compile Include="Entities\Sensors\PulseSensor.cs" />
     <Compile Include="Entities\Sensors\ThermalSensor.cs" />
     <Compile Include="Enums\AgentsEnum.cs" />
     <Compile Include="Enums\SensorEnum.cs" />
     <Compile Include="Factory\AgentFactory.cs" />
     <Compile Include="Factory\SensorsFactory.cs" />
+    <Compile Include="Managers\GameHistory.cs" />
     <Compile Include="Managers\InvestigationManager.cs" />
     <Compile Include="Managers\MenuManager.cs" />
     <Compile Include="Program.cs" />

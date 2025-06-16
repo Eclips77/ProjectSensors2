@@ -11,7 +11,7 @@ namespace ProjectSensors
     {
         static void Main(string[] args)
         {
-            MenuManager.Show();
+            MenuManager.StartApplicationLoop();
         }
     }
 }

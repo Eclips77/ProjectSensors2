@@ -16,6 +16,10 @@ namespace ProjectSensors.Factories
                     return new AudioSensor();
                 case SensorType.Pulse:
                     return new PulseSensor();
+                case SensorType.Motion:
+                    return new MotionSensor();
+                case SensorType.Magnetic:
+                    return new MagneticSensor();
                 default:
                     throw new ArgumentException($"Unknown Sensor Type: {type}");
             }
