@@ -5,11 +5,11 @@ namespace ProjectSensors.Managers
     public static class MenuManager
     {
         private static readonly Dictionary<int, SensorType> sensorMap = new Dictionary<int, SensorType>
-    {
-        { 1, SensorType.Audio },
-        { 2, SensorType.Thermal }
-        // future: { 3, SensorType.Pulse }, ...
-    };
+        {
+            { 1, SensorType.Audio },
+            { 2, SensorType.Thermal },
+            { 3, SensorType.Pulse }
+        };
 
         public static void PrintSensorOptions()
         {
@@ -27,6 +27,5 @@ namespace ProjectSensors.Managers
             return sensorMap[choice];
         }
     }
-
 }
 

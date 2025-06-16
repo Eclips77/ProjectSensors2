@@ -1,0 +1,116 @@
+﻿using System;
+using System.Collections.Generic;
+using ProjectSensors.Entities.AbstractClasses;
+using ProjectSensors.Factories;
+using ProjectSensors.Tools;
+
+namespace ProjectSensors.Managers
+{
+    public static class MenuManager
+    {
+        private static readonly Dictionary<int, AgentRank> agentOptions = new Dictionary<int, AgentRank>
+        {
+            { 1, AgentRank.FootSoldier },
+            { 2, AgentRank.SquadLeader }
+        };
+
+        private static readonly Dictionary<int, SensorType> sensorMap = new Dictionary<int, SensorType>
+        {
+            { 1, SensorType.Audio },
+            { 2, SensorType.Thermal },
+            { 3, SensorType.Pulse },
+            { 4, SensorType.Magnetic },
+            { 5, SensorType.Motion }
+        };
+
+        private static readonly Dictionary<AgentRank, List<SensorType>> allowedByRank = new Dictionary<AgentRank, List<SensorType>>
+        {
+            { AgentRank.FootSoldier, new List<SensorType> { SensorType.Audio, SensorType.Thermal } },
+            { AgentRank.SquadLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion } }
+        };
+
+        public static void StartApplicationLoop()
+        {
+            bool exitApp = false;
+            while (!exitApp)
+            {
+                Console.Clear();
+                Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
+                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("1. Start New Investigation");
+                Console.WriteLine("2. View Game History");
+                Console.WriteLine("3. Exit");
+                Console.WriteLine("----------------------------------------");
+
+                int choice = InputHelper.GetNumber("Enter your choice:");
+
+                switch (choice)
+                {
+                    case 1:
+                        DisplayAgentSelectionMenu();
+                        break;
+                    case 2:
+                        GameHistory.Instance.DisplayHistory();
+                        break;
+                    case 3:
+                        exitApp = true;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
+            }
+            Console.WriteLine("Thank you for playing!");
+        }
+
+        private static void DisplayAgentSelectionMenu()
+        {
+            Console.Clear();
+            Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
+            Console.WriteLine("Choose your target:");
+            Console.WriteLine("----------------------------------------");
+
+            foreach (var option in agentOptions)
+            {
+                Console.WriteLine($"{option.Key}. {option.Value}");
+                Console.WriteLine($"   Required Sensors: {(option.Value == AgentRank.FootSoldier ? "2" : "4")}");
+                Console.WriteLine($"   Available Sensors: {string.Join(", ", allowedByRank[option.Value])}");
+                Console.WriteLine();
+            }
+
+            int choice = InputHelper.GetNumber("Enter target number (1-2):");
+            if (!agentOptions.ContainsKey(choice))
+            {
+                Console.WriteLine("Invalid choice. Returning to main menu.");
+                return;
+            }
+
+            AgentRank selectedRank = agentOptions[choice];
+            var agent = AgentFactory.CreateAgent(selectedRank);
+
+            var investigation = new InvestigationManager(agent);
+            investigation.Run();
+        }
+
+        public static void PrintSensorOptions(AgentRank rank)
+        {
+            Console.WriteLine("\nAvailable Sensors for this target:");
+            Console.WriteLine("----------------------------------------");
+            foreach (var kvp in sensorMap)
+            {
+                if (allowedByRank.ContainsKey(rank) && allowedByRank[rank].Contains(kvp.Value))
+                {
+                    Console.WriteLine($"{kvp.Key}. {kvp.Value}");
+                }
+            }
+        }
+
+        public static SensorType GetSensorTypeByChoice(int choice)
+        {
+            if (!sensorMap.ContainsKey(choice))
+                throw new ArgumentException("Invalid sensor choice! Please select a valid number.");
+
+            return sensorMap[choice];
+        }
+    }
+}

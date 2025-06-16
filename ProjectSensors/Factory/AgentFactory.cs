@@ -1,5 +1,5 @@
-﻿using ProjectName.Entities.Agents;
-using ProjectSensors.Entities.AbstractClasses;
+﻿using ProjectSensors.Entities.AbstractClasses;
+using ProjectSensors.Entities.Agents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +16,8 @@ namespace ProjectSensors.Factories
             {
                 case AgentRank.FootSoldier:
                     return new FootSoldier(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 2));
+                case AgentRank.SquadLeader:
+                    return new SquadLeader(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 4));
 
                 default:
                     throw new ArgumentException($"Unknown Agent Rank: {rank}");
@@ -28,10 +30,8 @@ namespace ProjectSensors.Factories
             {
                 case AgentRank.FootSoldier:
                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal };
-
-                // future:
-                // case AgentRank.SquadLeader:
-                //     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse };
+                case AgentRank.SquadLeader:
+                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse };
 
                 default:
                     return Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
@@ -40,15 +40,26 @@ namespace ProjectSensors.Factories
 
         private static List<SensorType> GetRandomWeaknesses(List<SensorType> pool, int count)
         {
-            List<SensorType> result = new List<SensorType>();
-
-            for (int i = 0; i < count; i++)
+            // Ensure count does not exceed the number of available sensors
+            if (count > pool.Count)
             {
-                int index = random.Next(pool.Count);
-                result.Add(pool[index]);
+                count = pool.Count;
             }
 
-            return result;
+            List<SensorType> shuffledPool = new List<SensorType>(pool);
+
+            // Fisher-Yates shuffle algorithm for true randomness and uniqueness
+            int n = shuffledPool.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                SensorType value = shuffledPool[k];
+                shuffledPool[k] = shuffledPool[n];
+                shuffledPool[n] = value;
+            }
+
+            return shuffledPool.Take(count).ToList();
         }
     }
 }

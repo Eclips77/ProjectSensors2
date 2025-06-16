@@ -11,8 +11,7 @@ namespace ProjectSensors
     {
         static void Main(string[] args)
         {
-            InvestigationManager gameManager = new InvestigationManager();
-            gameManager.Run();
+            MenuManager.StartApplicationLoop();
         }
     }
 }
