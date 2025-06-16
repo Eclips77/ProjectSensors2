@@ -12,9 +12,9 @@ namespace ProjectSensors.Entities.AbstractClasses
         public bool IsExposed { get; protected set; }
         protected int TurnCounter;
 
-        protected IranianAgent(List<SensorType> weaknesses)
+        protected IranianAgent(List<SensorType> _weaknesses)
         {
-            Weaknesses = weaknesses;
+            Weaknesses = _weaknesses;
             AttachedSensors = new List<Sensor>();
             IsExposed = false;
             TurnCounter = 0;
@@ -28,7 +28,7 @@ namespace ProjectSensors.Entities.AbstractClasses
         public virtual int ActivateSensors()
         {
             int correct = 0;
-            foreach (var sensor in AttachedSensors)
+            foreach (Sensor sensor in AttachedSensors)
             {
                 if (sensor.Activate(Weaknesses))
                     correct++;

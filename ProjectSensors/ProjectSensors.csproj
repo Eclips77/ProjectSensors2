@@ -52,15 +52,16 @@
     <Compile Include="Enums\SensorEnum.cs" />
     <Compile Include="Factory\AgentFactory.cs" />
     <Compile Include="Factory\SensorsFactory.cs" />
+    <Compile Include="MainMenu.cs" />
+    <Compile Include="Managers\InvestigationManager.cs" />
+    <Compile Include="Managers\MainMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\IputHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Managers\" />
-    <Folder Include="Tools\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
