@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using ProjectSensors.Entities.AbstractClasses;
+
 
 namespace ProjectName.Entities.Agents
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProjectSensors.Managers;
 
 namespace ProjectSensors
 {
@@ -10,6 +11,8 @@ namespace ProjectSensors
     {
         static void Main(string[] args)
         {
+            InvestigationManager gameManager = new InvestigationManager();
+            gameManager.Run();
         }
     }
 }
