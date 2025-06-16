@@ -43,11 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractClasses\IranianAgent.cs" />
-    <Compile Include="AbstractClasses\Sensor.cs" />
+    <Compile Include="Entities\AbstractClasses\IranianAgent.cs" />
+    <Compile Include="Entities\AbstractClasses\Sensor.cs" />
     <Compile Include="Entities\Agents\FootSoldier.cs" />
+    <Compile Include="Entities\Sensors\AudioSensor.cs" />
+    <Compile Include="Entities\Sensors\ThermalSensor.cs" />
     <Compile Include="Enums\AgentsEnum.cs" />
     <Compile Include="Enums\SensorEnum.cs" />
+    <Compile Include="Factory\AgentFactory.cs" />
+    <Compile Include="Factory\SensorsFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -55,8 +59,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\Sensors\" />
-    <Folder Include="Factory\" />
     <Folder Include="Managers\" />
     <Folder Include="Tools\" />
   </ItemGroup>

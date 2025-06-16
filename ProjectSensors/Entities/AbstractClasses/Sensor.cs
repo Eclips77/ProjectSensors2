@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ProjectName.AbstractClasses
+namespace ProjectSensors.Entities.AbstractClasses
 {
     public abstract class Sensor
     {
