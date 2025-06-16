@@ -11,33 +11,52 @@ namespace ProjectSensors.Managers
         private IranianAgent currentAgent;
         private bool gameRunning = true;
 
+        public InvestigationManager(IranianAgent agent)
+        {
+            currentAgent = agent;
+        }
+
         public void StartGame()
         {
             Console.WriteLine("=== Welcome to the Investigation Game ===");
 
-            currentAgent = AgentFactory.CreateAgent(AgentRank.FootSoldier);
-
-            while (gameRunning)
+            try
             {
-                Console.WriteLine($"\nCurrent Agent Rank: {currentAgent.Rank}");
-                Console.WriteLine("Choose a sensor to attach:");
-
-                MenuManager.PrintSensorOptions();
-
-                int choice = InputHelper.GetNumber("Enter your choice:");
-                SensorType selectedType = MenuManager.GetSensorTypeByChoice(choice);
-
-                var sensor = SensorFactory.CreateSensor(selectedType);
-                currentAgent.AttachSensor(sensor);
-
-                int correct = currentAgent.ActivateSensors();
-                Console.WriteLine($" Matched sensors: {correct}/{2}");
-
-                if (currentAgent.GetIsExposed())
+                while (gameRunning)
                 {
-                    Console.WriteLine("\n Agent exposed! Well done.");
-                    gameRunning = false;
+                    Console.WriteLine($"\nCurrent Agent Rank: {currentAgent.Rank}");
+                    Console.WriteLine("Choose a sensor to attach:");
+
+                    MenuManager.PrintSensorOptions(currentAgent.Rank);
+
+                    int choice = InputHelper.GetNumber("Enter your choice:");
+                    SensorType selectedType = MenuManager.GetSensorTypeFromChoice(choice);
+
+                    try
+                    {
+                        var sensor = SensorsFactory.CreateSensor(selectedType);
+                        currentAgent.AttachSensor(sensor);
+
+                        int correct = currentAgent.ActivateSensors();
+                        Console.WriteLine($" Matched sensors: {correct}/{2}");
+
+                        if (currentAgent.GetIsExposed())
+                        {
+                            Console.WriteLine("\n Agent exposed! Well done.");
+                            gameRunning = false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"\nError: {ex.Message}");
+                        Console.WriteLine("Please try again.");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"\nFatal Error: {ex.Message}");
+                Console.WriteLine("Game cannot continue. Please restart.");
             }
         }
         public void Run()

@@ -1,5 +1,5 @@
-﻿using ProjectName.Entities.Agents;
-using ProjectSensors.Entities.AbstractClasses;
+﻿using ProjectSensors.Entities.AbstractClasses;
+using ProjectSensors.Entities.Agents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +16,8 @@ namespace ProjectSensors.Factories
             {
                 case AgentRank.FootSoldier:
                     return new FootSoldier(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 2));
+                case AgentRank.SquadLeader:
+                    return new SquadLeader(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 4));
 
                 default:
                     throw new ArgumentException($"Unknown Agent Rank: {rank}");
@@ -28,10 +30,8 @@ namespace ProjectSensors.Factories
             {
                 case AgentRank.FootSoldier:
                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal };
-
-                // future:
-                // case AgentRank.SquadLeader:
-                //     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse };
+                case AgentRank.SquadLeader:
+                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse };
 
                 default:
                     return Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();

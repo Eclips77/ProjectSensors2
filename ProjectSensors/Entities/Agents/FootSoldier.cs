@@ -2,7 +2,7 @@
 using ProjectSensors.Entities.AbstractClasses;
 
 
-namespace ProjectName.Entities.Agents
+namespace ProjectSensors.Entities.Agents
 {
     public class FootSoldier : IranianAgent
     {
