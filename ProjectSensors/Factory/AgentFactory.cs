@@ -44,7 +44,6 @@ namespace ProjectSensors.Factories
 
         public static List<SensorType> GetRandomWeaknesses(List<SensorType> pool, int count)
         {
-            // Ensure count does not exceed the number of available sensors
             if (count > pool.Count)
             {
                 count = pool.Count;
@@ -52,7 +51,6 @@ namespace ProjectSensors.Factories
 
             List<SensorType> shuffledPool = new List<SensorType>(pool);
 
-            // Fisher-Yates shuffle algorithm for true randomness and uniqueness
             int n = shuffledPool.Count;
             while (n > 1)
             {
