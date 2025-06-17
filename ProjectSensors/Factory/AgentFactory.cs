@@ -36,7 +36,8 @@ namespace ProjectSensors.Factories
                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal };
                 case AgentRank.SquadLeader:
                      return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse };
-
+                case AgentRank.SeniorCommander:
+                    return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse,SensorType.Signal,SensorType.Motion,SensorType.Magnetic };
                 default:
                     return Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
             }
