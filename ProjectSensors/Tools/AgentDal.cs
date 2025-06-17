@@ -22,7 +22,7 @@ namespace ProjectSensors.Tools
                     using (var cmd = conn.CreateCommand())
                     {
                         cmd.CommandText = "INSERT INTO players(username, highest_rank_unlocked) VALUES(@user, @rank) " +
-                                         "ON DUPLICATE KEY UPDATE highest_rank_unlocked=@rank";
+                                         "ON DUPLICATE KEY UPDATE highest_rank_unlocked = GREATEST(highest_rank_unlocked, @rank)";
                         cmd.Parameters.AddWithValue("@user", username);
                         cmd.Parameters.AddWithValue("@rank", highestRank);
                         cmd.ExecuteNonQuery();

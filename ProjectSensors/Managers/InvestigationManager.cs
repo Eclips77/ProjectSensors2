@@ -71,6 +71,18 @@ namespace ProjectSensors.Managers
                                 true,
                                 currentAgent.GetWeaknesses()));
 
+                            try
+                            {
+                                var conn = Environment.GetEnvironmentVariable("GAME_DB_CONN") ??
+                                            "server=localhost;user id=root;password=;database=game";
+                                var statsDal = new AgentDal(conn);
+                                statsDal.UpdatePlayerStats(PlayerSession.Username, (int)currentAgent.Rank);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Error updating player stats: {ex.Message}");
+                            }
+
                             Console.WriteLine("\nPress any key to continue...");
                             Console.ReadKey();
 
