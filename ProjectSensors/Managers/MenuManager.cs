@@ -56,7 +56,7 @@ namespace ProjectSensors.Managers
                         DisplayAgentSelectionMenu();
                         break;
                     case 2:
-                        GameHistory.Instance.DisplayHistory();
+                        GameHistory.Instance.DisplayHistory(PlayerSession.Username);
                         break;
                     case 3:
                         exitApp = true;

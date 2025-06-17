@@ -35,7 +35,7 @@ namespace ProjectSensors.Factories
                 case AgentRank.FootSoldier:
                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal };
                 case AgentRank.SquadLeader:
-                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse };
+                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion };
                 case AgentRank.SeniorCommander:
                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse,SensorType.Signal,SensorType.Motion,SensorType.Magnetic };
                 default:

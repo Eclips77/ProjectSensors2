@@ -13,12 +13,14 @@ CREATE TABLE IF NOT EXISTS players (
 
 -- Table for recording game history
 CREATE TABLE IF NOT EXISTS game_history (
+    username VARCHAR(100) NOT NULL,
     id INT AUTO_INCREMENT PRIMARY KEY,
     agent_type VARCHAR(100) NOT NULL,
     weakness_combo VARCHAR(255) NOT NULL,
     used_sensors VARCHAR(255) NOT NULL,
     correct_sensors VARCHAR(255) NOT NULL,
     turns_taken INT NOT NULL,
+    score INT NOT NULL,
     victory TINYINT(1) NOT NULL,
     timestamp DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

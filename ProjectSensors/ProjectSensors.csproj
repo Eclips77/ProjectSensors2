@@ -121,6 +121,8 @@
     <Compile Include="Managers\MenuManager.cs" />
     <Compile Include="Tools\HistoryDal.cs" />
     <Compile Include="Tools\AgentDal.cs" />
+    <Compile Include="Tools\PlayerDal.cs" />
+    <Compile Include="Tools\PlayerSession.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tools\InputHelper.cs" />

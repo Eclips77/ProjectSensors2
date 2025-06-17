@@ -34,23 +34,25 @@ namespace ProjectSensors.Managers
         {
             var entry = new GameHistoryEntry
             {
+                Username = session.Username,
                 AgentType = session.AgentRank.ToString(),
                 WeaknessCombination = session.WeaknessCombination,
                 UsedSensors = session.UsedSensors,
                 CorrectSensors = session.CorrectSensors,
                 TurnsTaken = session.Attempts,
+                Score = session.Score,
                 Victory = session.Victory,
                 Timestamp = session.Date
             };
             _historyDal.Insert(entry);
         }
 
-        public void DisplayHistory()
+        public void DisplayHistory(string username)
         {
             Console.Clear();
             Console.WriteLine("=== GAME HISTORY ===");
 
-            var entries = _historyDal.GetAll();
+            var entries = _historyDal.GetByUser(username);
             int gamesPlayed = entries.Count;
             int totalScore = 0;
             var agentsExposed = new Dictionary<AgentRank, int>();
@@ -65,9 +67,7 @@ namespace ProjectSensors.Managers
                     if (e.Victory)
                         agentsExposed[rank]++;
 
-                    int baseScore = rank == AgentRank.FootSoldier ? 100 : 200;
-                    int score = e.Victory && e.TurnsTaken > 0 ? baseScore / e.TurnsTaken : 0;
-                    totalScore += score;
+                    totalScore += e.Score;
                 }
 
                 foreach (var s in e.UsedSensors)
@@ -114,17 +114,19 @@ namespace ProjectSensors.Managers
         public DateTime Date { get; }
         public AgentRank AgentRank { get; }
         public int Score { get; }
+        public string Username { get; }
         public List<SensorType> UsedSensors { get; }
         public int Attempts { get; }
         public bool Victory { get; }
         public List<SensorType> WeaknessCombination { get; }
         public List<SensorType> CorrectSensors { get; }
 
-        public GameSession(AgentRank agentRank, int score, List<SensorType> usedSensors, int attempts, bool victory, List<SensorType> weaknesses)
+        public GameSession(string username, AgentRank agentRank, int score, List<SensorType> usedSensors, int attempts, bool victory, List<SensorType> weaknesses)
         {
             Date = DateTime.Now;
             AgentRank = agentRank;
             Score = score;
+            Username = username;
             UsedSensors = new List<SensorType>(usedSensors);
             Attempts = attempts;
             Victory = victory;
