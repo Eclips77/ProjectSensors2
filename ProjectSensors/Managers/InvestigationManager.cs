@@ -46,14 +46,14 @@ namespace ProjectSensors.Managers
                     try
                     {
                         Sensor sensor = SensorsFactory.CreateSensor(selectedType);
-                        currentAgent.AttachSensor(sensor);
+                        currentAgent.AddSensor(sensor);
                         _currentSessionUsedSensors.Add(selectedType);
 
-                        int correct = currentAgent.ActivateSensors();
+                        int correct = currentAgent.Activate();
                         int required = GetRequiredSensorsCount();
                         Console.WriteLine($"\nMatched sensors: {correct}/{required}");
 
-                        if (currentAgent.GetIsExposed())
+                        if (currentAgent.CheckIfExposed())
                         {
                             Console.WriteLine("\n=== SUCCESS! ===");
                             Console.WriteLine($"Agent {currentAgent.Rank} has been exposed!");
@@ -82,7 +82,7 @@ namespace ProjectSensors.Managers
                     }
                 }
 
-                if (!currentAgent.GetIsExposed() || attempts >= maxAttemptsForAgent)
+                if (!currentAgent.CheckIfExposed() || attempts >= maxAttemptsForAgent)
                 {
                      GameHistory.Instance.DisplayHistory();
                 }
@@ -96,7 +96,19 @@ namespace ProjectSensors.Managers
 
         private int GetRequiredSensorsCount()
         {
-            return currentAgent.Rank == AgentRank.FootSoldier ? 2 : 4;
+            switch (currentAgent.Rank)
+            {
+                case AgentRank.FootSoldier:
+                    return 2;
+                case AgentRank.SquadLeader:
+                    return 4;
+                case AgentRank.SeniorCommander:
+                    return 6;
+                case AgentRank.OrganizationLeader:
+                    return 8;
+                default:
+                    return 2;
+            }
         }
 
         public void Run()
