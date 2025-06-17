@@ -18,13 +18,17 @@ namespace ProjectSensors.Factories
                     return new FootSoldier(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 2));
                 case AgentRank.SquadLeader:
                     return new SquadLeader(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 4));
+                case AgentRank.SeniorCommander:
+                    return new SeniorCommander(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 6));
+                case AgentRank.OrganizationLeader:
+                    return new OrganizationLeader(GetRandomWeaknesses(GetAllowedSensorTypes(rank), 8));
 
                 default:
                     throw new ArgumentException($"Unknown Agent Rank: {rank}");
             }
         }
 
-        private static List<SensorType> GetAllowedSensorTypes(AgentRank rank)
+        public static List<SensorType> GetAllowedSensorTypes(AgentRank rank)
         {
             switch (rank)
             {
@@ -38,7 +42,7 @@ namespace ProjectSensors.Factories
             }
         }
 
-        private static List<SensorType> GetRandomWeaknesses(List<SensorType> pool, int count)
+        public static List<SensorType> GetRandomWeaknesses(List<SensorType> pool, int count)
         {
             // Ensure count does not exceed the number of available sensors
             if (count > pool.Count)

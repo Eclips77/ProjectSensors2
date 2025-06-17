@@ -11,7 +11,9 @@ namespace ProjectSensors.Managers
         private static readonly Dictionary<int, AgentRank> agentOptions = new Dictionary<int, AgentRank>
         {
             { 1, AgentRank.FootSoldier },
-            { 2, AgentRank.SquadLeader }
+            { 2, AgentRank.SquadLeader },
+            { 3, AgentRank.SeniorCommander },
+            { 4, AgentRank.OrganizationLeader }
         };
 
         private static readonly Dictionary<int, SensorType> sensorMap = new Dictionary<int, SensorType>
@@ -20,13 +22,17 @@ namespace ProjectSensors.Managers
             { 2, SensorType.Thermal },
             { 3, SensorType.Pulse },
             { 4, SensorType.Magnetic },
-            { 5, SensorType.Motion }
+            { 5, SensorType.Motion },
+            { 6, SensorType.Signal },
+            { 7, SensorType.Light }
         };
 
         private static readonly Dictionary<AgentRank, List<SensorType>> allowedByRank = new Dictionary<AgentRank, List<SensorType>>
         {
             { AgentRank.FootSoldier, new List<SensorType> { SensorType.Audio, SensorType.Thermal } },
-            { AgentRank.SquadLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion } }
+            { AgentRank.SquadLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion } },
+            { AgentRank.SeniorCommander, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion, SensorType.Signal } },
+            { AgentRank.OrganizationLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion, SensorType.Signal, SensorType.Light } }
         };
 
         public static void StartApplicationLoop()
@@ -73,12 +79,16 @@ namespace ProjectSensors.Managers
             foreach (var option in agentOptions)
             {
                 Console.WriteLine($"{option.Key}. {option.Value}");
-                Console.WriteLine($"   Required Sensors: {(option.Value == AgentRank.FootSoldier ? "2" : "4")}");
+                string required = "2";
+                if (option.Value == AgentRank.SquadLeader) required = "4";
+                else if (option.Value == AgentRank.SeniorCommander) required = "6";
+                else if (option.Value == AgentRank.OrganizationLeader) required = "8";
+                Console.WriteLine($"   Required Sensors: {required}");
                 Console.WriteLine($"   Available Sensors: {string.Join(", ", allowedByRank[option.Value])}");
                 Console.WriteLine();
             }
 
-            int choice = InputHelper.GetNumber("Enter target number (1-2):");
+            int choice = InputHelper.GetNumber("Enter target number (1-4):");
             if (!agentOptions.ContainsKey(choice))
             {
                 Console.WriteLine("Invalid choice. Returning to main menu.");

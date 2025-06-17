@@ -18,3 +18,4 @@ namespace ProjectSensors.Entities.Sensors
         }
     }
 } 
+
