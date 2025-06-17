@@ -62,6 +62,7 @@ namespace ProjectSensors.Managers
                             int baseScore = currentAgent.Rank == AgentRank.FootSoldier ? 100 : 200;
                             int score = baseScore / attempts;
                             GameHistory.Instance.AddSession(new GameSession(
+                                PlayerSession.Username,
                                 currentAgent.Rank,
                                 score,
                                 _currentSessionUsedSensors,
@@ -81,6 +82,7 @@ namespace ProjectSensors.Managers
                             Console.WriteLine($"The {currentAgent.Rank} has escaped.");
 
                             GameHistory.Instance.AddSession(new GameSession(
+                                PlayerSession.Username,
                                 currentAgent.Rank,
                                 0,
                                 _currentSessionUsedSensors,
@@ -102,7 +104,7 @@ namespace ProjectSensors.Managers
                     }
                 }
 
-                GameHistory.Instance.DisplayHistory();
+                GameHistory.Instance.DisplayHistory(PlayerSession.Username);
             }
             catch (Exception ex)
             {
