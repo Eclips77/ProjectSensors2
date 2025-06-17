@@ -32,19 +32,26 @@ namespace ProjectSensors.Managers
 
         public void AddSession(GameSession session)
         {
-            var entry = new GameHistoryEntry
+            try
             {
-                Username = session.Username,
-                AgentType = session.AgentRank.ToString(),
-                WeaknessCombination = session.WeaknessCombination,
-                UsedSensors = session.UsedSensors,
-                CorrectSensors = session.CorrectSensors,
-                TurnsTaken = session.Attempts,
-                Score = session.Score,
-                Victory = session.Victory,
-                Timestamp = session.Date
-            };
-            _historyDal.Insert(entry);
+                var entry = new GameHistoryEntry
+                {
+                    Username = session.Username,
+                    AgentType = session.AgentRank.ToString(),
+                    WeaknessCombination = session.WeaknessCombination,
+                    UsedSensors = session.UsedSensors,
+                    CorrectSensors = session.CorrectSensors,
+                    TurnsTaken = session.Attempts,
+                    Score = session.Score,
+                    Victory = session.Victory,
+                    Timestamp = session.Date
+                };
+                _historyDal.Insert(entry);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GameHistory.AddSession: {ex.Message}");
+            }
         }
 
         public void DisplayHistory(string username)
@@ -52,7 +59,16 @@ namespace ProjectSensors.Managers
             Console.Clear();
             Console.WriteLine("=== GAME HISTORY ===");
 
-            var entries = _historyDal.GetByUser(username);
+            List<GameHistoryEntry> entries = new List<GameHistoryEntry>();
+            try
+            {
+                entries = _historyDal.GetByUser(username);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GameHistory.DisplayHistory: {ex.Message}");
+                return;
+            }
             int gamesPlayed = entries.Count;
             int totalScore = 0;
             var agentsExposed = new Dictionary<AgentRank, int>();

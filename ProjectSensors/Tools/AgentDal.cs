@@ -14,17 +14,24 @@ namespace ProjectSensors.Tools
 
         public void UpdatePlayerStats(string username, int highestRank)
         {
-            using (var conn = new MySqlConnection(_connectionString))
+            try
             {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
+                using (var conn = new MySqlConnection(_connectionString))
                 {
-                    cmd.CommandText = "INSERT INTO players(username, highest_rank_unlocked) VALUES(@user, @rank) " +
-                                     "ON DUPLICATE KEY UPDATE highest_rank_unlocked=@rank";
-                    cmd.Parameters.AddWithValue("@user", username);
-                    cmd.Parameters.AddWithValue("@rank", highestRank);
-                    cmd.ExecuteNonQuery();
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "INSERT INTO players(username, highest_rank_unlocked) VALUES(@user, @rank) " +
+                                         "ON DUPLICATE KEY UPDATE highest_rank_unlocked=@rank";
+                        cmd.Parameters.AddWithValue("@user", username);
+                        cmd.Parameters.AddWithValue("@rank", highestRank);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in AgentDal.UpdatePlayerStats: {ex.Message}");
             }
         }
     }

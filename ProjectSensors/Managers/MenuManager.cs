@@ -40,30 +40,37 @@ namespace ProjectSensors.Managers
             bool exitApp = false;
             while (!exitApp)
             {
-                Console.Clear();
-                Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
-                Console.WriteLine("----------------------------------------");
-                Console.WriteLine("1. Start New Investigation");
-                Console.WriteLine("2. View Game History");
-                Console.WriteLine("3. Exit");
-                Console.WriteLine("----------------------------------------");
-
-                int choice = InputHelper.GetNumber("Enter your choice:");
-
-                switch (choice)
+                try
                 {
-                    case 1:
-                        DisplayAgentSelectionMenu();
-                        break;
-                    case 2:
-                        GameHistory.Instance.DisplayHistory(PlayerSession.Username);
-                        break;
-                    case 3:
-                        exitApp = true;
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice. Please try again.");
-                        break;
+                    Console.Clear();
+                    Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
+                    Console.WriteLine("----------------------------------------");
+                    Console.WriteLine("1. Start New Investigation");
+                    Console.WriteLine("2. View Game History");
+                    Console.WriteLine("3. Exit");
+                    Console.WriteLine("----------------------------------------");
+
+                    int choice = InputHelper.GetNumber("Enter your choice:");
+
+                    switch (choice)
+                    {
+                        case 1:
+                            DisplayAgentSelectionMenu();
+                            break;
+                        case 2:
+                            GameHistory.Instance.DisplayHistory(PlayerSession.Username);
+                            break;
+                        case 3:
+                            exitApp = true;
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice. Please try again.");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in StartApplicationLoop: {ex.Message}");
                 }
             }
             Console.WriteLine("Thank you for playing!");
@@ -71,35 +78,42 @@ namespace ProjectSensors.Managers
 
         private static void DisplayAgentSelectionMenu()
         {
-            Console.Clear();
-            Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
-            Console.WriteLine("Choose your target:");
-            Console.WriteLine("----------------------------------------");
-
-            foreach (var option in agentOptions)
+            try
             {
-                Console.WriteLine($"{option.Key}. {option.Value}");
-                string required = "2";
-                if (option.Value == AgentRank.SquadLeader) required = "4";
-                else if (option.Value == AgentRank.SeniorCommander) required = "6";
-                else if (option.Value == AgentRank.OrganizationLeader) required = "8";
-                Console.WriteLine($"   Required Sensors: {required}");
-                Console.WriteLine($"   Available Sensors: {string.Join(", ", allowedByRank[option.Value])}");
-                Console.WriteLine();
-            }
+                Console.Clear();
+                Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
+                Console.WriteLine("Choose your target:");
+                Console.WriteLine("----------------------------------------");
 
-            int choice = InputHelper.GetNumber("Enter target number (1-4):");
-            if (!agentOptions.ContainsKey(choice))
+                foreach (var option in agentOptions)
+                {
+                    Console.WriteLine($"{option.Key}. {option.Value}");
+                    string required = "2";
+                    if (option.Value == AgentRank.SquadLeader) required = "4";
+                    else if (option.Value == AgentRank.SeniorCommander) required = "6";
+                    else if (option.Value == AgentRank.OrganizationLeader) required = "8";
+                    Console.WriteLine($"   Required Sensors: {required}");
+                    Console.WriteLine($"   Available Sensors: {string.Join(", ", allowedByRank[option.Value])}");
+                    Console.WriteLine();
+                }
+
+                int choice = InputHelper.GetNumber("Enter target number (1-4):");
+                if (!agentOptions.ContainsKey(choice))
+                {
+                    Console.WriteLine("Invalid choice. Returning to main menu.");
+                    return;
+                }
+
+                AgentRank selectedRank = agentOptions[choice];
+                var agent = AgentFactory.CreateAgent(selectedRank);
+
+                var investigation = new InvestigationManager(agent);
+                investigation.Run();
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine("Invalid choice. Returning to main menu.");
-                return;
+                Console.WriteLine($"Error in DisplayAgentSelectionMenu: {ex.Message}");
             }
-
-            AgentRank selectedRank = agentOptions[choice];
-            var agent = AgentFactory.CreateAgent(selectedRank);
-
-            var investigation = new InvestigationManager(agent);
-            investigation.Run();
         }
 
         public static void PrintSensorOptions(AgentRank rank)

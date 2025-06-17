@@ -13,15 +13,22 @@ namespace ProjectSensors.Tools
 
         public void EnsurePlayerExists(string username)
         {
-            using (var conn = new MySqlConnection(_connectionString))
+            try
             {
-                conn.Open();
-                using (var cmd = conn.CreateCommand())
+                using (var conn = new MySqlConnection(_connectionString))
                 {
-                    cmd.CommandText = "INSERT IGNORE INTO players(username, highest_rank_unlocked) VALUES(@user, 0);";
-                    cmd.Parameters.AddWithValue("@user", username);
-                    cmd.ExecuteNonQuery();
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "INSERT IGNORE INTO players(username, highest_rank_unlocked) VALUES(@user, 0);";
+                        cmd.Parameters.AddWithValue("@user", username);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in PlayerDal.EnsurePlayerExists: {ex.Message}");
             }
         }
     }

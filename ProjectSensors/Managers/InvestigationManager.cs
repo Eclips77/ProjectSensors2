@@ -108,7 +108,7 @@ namespace ProjectSensors.Managers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"\nFatal Error: {ex.Message}");
+                Console.WriteLine($"\nError in StartGame: {ex.Message}");
                 Console.WriteLine("Game cannot continue. Please restart.");
             }
         }
