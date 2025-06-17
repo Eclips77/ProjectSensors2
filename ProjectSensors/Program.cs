@@ -12,16 +12,39 @@ namespace ProjectSensors
     {
         static void Main(string[] args)
         {
-            Console.Write("Enter username: ");
-            string user = Console.ReadLine();
-            PlayerSession.Login(user);
+            try
+            {
+                string user;
+                do
+                {
+                    Console.Write("Enter username: ");
+                    user = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(user))
+                    {
+                        Console.WriteLine("Username cannot be empty. Please try again.");
+                    }
+                } while (string.IsNullOrWhiteSpace(user));
 
-            var conn = Environment.GetEnvironmentVariable("GAME_DB_CONN") ??
-                        "server=localhost;user id=root;password=;database=game";
-            var playerDal = new PlayerDal(conn);
-            playerDal.EnsurePlayerExists(user);
+                PlayerSession.Login(user);
 
-            MenuManager.StartApplicationLoop();
+                var conn = Environment.GetEnvironmentVariable("GAME_DB_CONN") ??
+                            "server=localhost;user id=root;password=;database=game";
+                var playerDal = new PlayerDal(conn);
+                try
+                {
+                    playerDal.EnsurePlayerExists(user);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error in EnsurePlayerExists: {ex.Message}");
+                }
+
+                MenuManager.StartApplicationLoop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Unhandled error in Main: {ex.Message}");
+            }
         }
     }
 }
