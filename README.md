@@ -17,3 +17,7 @@ Or using `msbuild`/`xbuild` if `dotnet` is unavailable.
 After building, execute the compiled `ProjectSensors.exe` from the `bin` directory.
 
 The game records sessions to a MySQL database using the connection string you provide when creating the DAL classes.
+
+## Database Setup
+
+Run the `mysql_setup.sql` script in your MySQL server (for example using phpMyAdmin) to create the default `game` database and the required `players` and `game_history` tables.
