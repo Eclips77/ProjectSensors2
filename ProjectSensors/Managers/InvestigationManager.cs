@@ -111,7 +111,9 @@ namespace ProjectSensors.Managers
 
                         if (currentAgent.CheckIfExposed())
                         {
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("\n=== SUCCESS! ===");
+                            Console.ResetColor();
                             Console.WriteLine($"Agent {currentAgent.Rank} has been exposed!");
                             Console.WriteLine($"It took you {attempts} attempts.");
                             GameLogger.Log("Game won");
@@ -149,7 +151,9 @@ namespace ProjectSensors.Managers
                         }
                         else if (attempts >= maxAttemptsForAgent)
                         {
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("\n=== GAME OVER ===");
+                            Console.ResetColor();
                             Console.WriteLine("You've run out of attempts!");
                             Console.WriteLine($"The {currentAgent.Rank} has escaped.");
                             GameLogger.Log("Game lost");

@@ -55,7 +55,26 @@ namespace ProjectSensors.Entities.AbstractClasses
             else
                 Mood = AgentMood.Calm;
 
+            ConsoleColor prev = Console.ForegroundColor;
+            ConsoleColor moodColor = ConsoleColor.White;
+            switch (Mood)
+            {
+                case AgentMood.Calm:
+                    moodColor = ConsoleColor.Green;
+                    break;
+                case AgentMood.Alert:
+                    moodColor = ConsoleColor.Yellow;
+                    break;
+                case AgentMood.Nervous:
+                    moodColor = ConsoleColor.DarkYellow;
+                    break;
+                case AgentMood.Panicked:
+                    moodColor = ConsoleColor.Red;
+                    break;
+            }
+            Console.ForegroundColor = moodColor;
             Console.WriteLine($"Agent mood: {Mood}");
+            Console.ForegroundColor = prev;
 
             if (matchedTypes.Count == WeaknessCombination.Count)
                 IsExposed = true;
