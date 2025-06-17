@@ -22,4 +22,8 @@ The game records sessions to a MySQL database using the connection string you pr
 
 Run the `mysql_setup.sql` script in your MySQL server (for example using phpMyAdmin) to create the default `game` database and the required tables. Each player is stored in the `players` table and individual game sessions are recorded in `game_history`.
 
+### Upgrading existing databases
+
+If you upgraded from an older version and receive an error such as `Unknown column 'username' in 'field list'`, your `game_history` table might be missing the new `username` column. Run the provided `mysql_upgrade.sql` script to add this column.
+
 When starting the application you will be prompted for a username. History and scores are tracked separately for each player.
