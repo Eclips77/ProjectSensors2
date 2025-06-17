@@ -12,6 +12,11 @@ namespace ProjectSensors
     {
         static void Main(string[] args)
         {
+            Run();
+        }
+
+        private static void Run()
+        {
             try
             {
                 var conn = Environment.GetEnvironmentVariable("GAME_DB_CONN") ??
