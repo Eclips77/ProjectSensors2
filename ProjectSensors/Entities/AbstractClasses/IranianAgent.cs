@@ -34,19 +34,19 @@ namespace ProjectSensors.Entities.AbstractClasses
 
         public virtual int Activate()
         {
-            int correct = 0;
+            var matchedTypes = new HashSet<SensorType>();
             foreach (Sensor sensor in AttachedSensors)
             {
                 if (sensor.Activate(WeaknessCombination))
-                    correct++;
+                    matchedTypes.Add(sensor.Type);
             }
 
-            if (correct == WeaknessCombination.Count)
+            if (matchedTypes.Count == WeaknessCombination.Count)
                 IsExposed = true;
 
             TurnCounter++;
             ActivateCounter++;
-            return correct;
+            return matchedTypes.Count;
         }
 
         public bool CheckIfExposed()
