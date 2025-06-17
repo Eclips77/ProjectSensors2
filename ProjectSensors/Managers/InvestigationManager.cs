@@ -61,7 +61,13 @@ namespace ProjectSensors.Managers
 
                             int baseScore = currentAgent.Rank == AgentRank.FootSoldier ? 100 : 200;
                             int score = baseScore / attempts;
-                            GameHistory.Instance.AddSession(new GameSession(currentAgent.Rank, score, _currentSessionUsedSensors));
+                            GameHistory.Instance.AddSession(new GameSession(
+                                currentAgent.Rank,
+                                score,
+                                _currentSessionUsedSensors,
+                                attempts,
+                                true,
+                                currentAgent.GetWeaknesses()));
 
                             gameRunning = false;
                         }
@@ -71,7 +77,13 @@ namespace ProjectSensors.Managers
                             Console.WriteLine("You've run out of attempts!");
                             Console.WriteLine($"The {currentAgent.Rank} has escaped.");
 
-                            GameHistory.Instance.AddSession(new GameSession(currentAgent.Rank, 0, _currentSessionUsedSensors));
+                            GameHistory.Instance.AddSession(new GameSession(
+                                currentAgent.Rank,
+                                0,
+                                _currentSessionUsedSensors,
+                                attempts,
+                                false,
+                                currentAgent.GetWeaknesses()));
                         }
                     }
                     catch (Exception ex)
