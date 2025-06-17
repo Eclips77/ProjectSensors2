@@ -119,6 +119,7 @@
     <Compile Include="Managers\GameHistory.cs" />
     <Compile Include="Managers\InvestigationManager.cs" />
     <Compile Include="Managers\MenuManager.cs" />
+    <Compile Include="Run.cs" />
     <Compile Include="Tools\HistoryDal.cs" />
     <Compile Include="Tools\AgentDal.cs" />
     <Compile Include="Tools\PlayerDal.cs" />
