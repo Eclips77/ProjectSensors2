@@ -54,7 +54,7 @@ namespace ProjectSensors.Managers
             }
         }
 
-        public void DisplayHistory(string username)
+        public void DisplayHistory(string username = null)
         {
             Console.Clear();
             Console.WriteLine("=== GAME HISTORY ===");
@@ -62,7 +62,14 @@ namespace ProjectSensors.Managers
             List<GameHistoryEntry> entries = new List<GameHistoryEntry>();
             try
             {
-                entries = _historyDal.GetByUser(username);
+                if (string.IsNullOrWhiteSpace(username))
+                {
+                    entries = _historyDal.GetAll();
+                }
+                else
+                {
+                    entries = _historyDal.GetByUser(username);
+                }
             }
             catch (Exception ex)
             {

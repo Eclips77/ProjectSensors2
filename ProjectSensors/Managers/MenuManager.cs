@@ -35,10 +35,11 @@ namespace ProjectSensors.Managers
             { AgentRank.OrganizationLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion, SensorType.Signal, SensorType.Light } }
         };
 
-        public static void StartApplicationLoop()
+        public static bool StartApplicationLoop()
         {
             bool exitApp = false;
-            while (!exitApp)
+            bool logout = false;
+            while (!exitApp && !logout)
             {
                 try
                 {
@@ -47,7 +48,8 @@ namespace ProjectSensors.Managers
                     Console.WriteLine("----------------------------------------");
                     Console.WriteLine("1. Start New Investigation");
                     Console.WriteLine("2. View Game History");
-                    Console.WriteLine("3. Exit");
+                    Console.WriteLine("3. Log Out");
+                    Console.WriteLine("4. Exit");
                     Console.WriteLine("----------------------------------------");
 
                     int choice = InputHelper.GetNumber("Enter your choice:");
@@ -58,9 +60,19 @@ namespace ProjectSensors.Managers
                             DisplayAgentSelectionMenu();
                             break;
                         case 2:
-                            GameHistory.Instance.DisplayHistory(PlayerSession.Username);
+                            if (PlayerSession.IsAdmin)
+                            {
+                                DisplayAdminHistoryMenu();
+                            }
+                            else
+                            {
+                                GameHistory.Instance.DisplayHistory(PlayerSession.Username);
+                            }
                             break;
                         case 3:
+                            logout = true;
+                            break;
+                        case 4:
                             exitApp = true;
                             break;
                         default:
@@ -74,6 +86,7 @@ namespace ProjectSensors.Managers
                 }
             }
             Console.WriteLine("Thank you for playing!");
+            return logout;
         }
 
         private static void DisplayAgentSelectionMenu()
@@ -113,6 +126,46 @@ namespace ProjectSensors.Managers
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in DisplayAgentSelectionMenu: {ex.Message}");
+            }
+        }
+
+        private static void DisplayAdminHistoryMenu()
+        {
+            try
+            {
+                Console.Clear();
+                Console.WriteLine("=== HISTORY MENU ===");
+                Console.WriteLine("1. View All History");
+                Console.WriteLine("2. View History By Player");
+                Console.WriteLine("3. Back");
+
+                int choice = InputHelper.GetNumber("Enter your choice:");
+
+                switch (choice)
+                {
+                    case 1:
+                        GameHistory.Instance.DisplayHistory();
+                        break;
+                    case 2:
+                        var conn = Environment.GetEnvironmentVariable("GAME_DB_CONN") ??
+                                    "server=localhost;user id=root;password=;database=game";
+                        var playerDal = new PlayerDal(conn);
+                        var users = playerDal.GetAllUsernames();
+                        for (int i = 0; i < users.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {users[i]}");
+                        }
+                        int userChoice = InputHelper.GetNumber("Select player number:");
+                        if (userChoice > 0 && userChoice <= users.Count)
+                            GameHistory.Instance.DisplayHistory(users[userChoice - 1]);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in DisplayAdminHistoryMenu: {ex.Message}");
             }
         }
 
