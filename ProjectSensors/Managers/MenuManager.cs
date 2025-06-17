@@ -58,14 +58,19 @@ namespace ProjectSensors.Managers
                 try
                 {
                     Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
+                    Console.ResetColor();
                     Console.WriteLine("----------------------------------------");
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine("1. Start New Investigation");
                     Console.WriteLine("2. Start Parallel Investigation");
                     Console.WriteLine("3. View Game History");
                     Console.WriteLine("4. View Rankings");
-                    Console.WriteLine("5. Log Out");
-                    Console.WriteLine("6. Exit");
+                    Console.WriteLine("5. How To Play");
+                    Console.WriteLine("6. Log Out");
+                    Console.WriteLine("7. Exit");
+                    Console.ResetColor();
                     Console.WriteLine("----------------------------------------");
 
                     int choice = InputHelper.GetNumber("Enter your choice:");
@@ -92,9 +97,12 @@ namespace ProjectSensors.Managers
                             RankingManager.DisplayRankings();
                             break;
                         case 5:
-                            logout = true;
+                            DisplayInstructions();
                             break;
                         case 6:
+                            logout = true;
+                            break;
+                        case 7:
                             exitApp = true;
                             break;
                         default:
@@ -229,6 +237,23 @@ namespace ProjectSensors.Managers
             var a2 = AgentFactory.CreateAgent(AgentRank.SquadLeader);
             var manager = new ParallelInvestigationManager(a1, a2, Difficulty.Medium);
             manager.Run();
+        }
+
+        private static void DisplayInstructions()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("=== HOW TO PLAY ===");
+            Console.ResetColor();
+            Console.WriteLine();
+            Console.WriteLine("1. Select \"Start New Investigation\" to choose an agent rank.");
+            Console.WriteLine("   FootSoldier requires 2 sensors, SquadLeader 4, SeniorCommander 6 and OrganizationLeader 8.");
+            Console.WriteLine("2. Each turn you have limited time to pick a sensor. A countdown will show the remaining seconds.");
+            Console.WriteLine("3. Sensors cost credits from your budget. Match the agent's weaknesses before running out of attempts.");
+            Console.WriteLine("4. Answer the pre-mission trivia question correctly to earn bonus credits.");
+            Console.WriteLine();
+            Console.WriteLine("Press any key to return to the menu...");
+            Console.ReadKey();
         }
     }
 }

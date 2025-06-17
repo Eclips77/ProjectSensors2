@@ -18,6 +18,8 @@ After building, execute the compiled `ProjectSensors.exe` from the `bin` directo
 
 The game records sessions to a MySQL database using the connection string you provide when creating the DAL classes.
 
+A new on-screen countdown shows how long you have to pick a sensor each turn. Use the **How To Play** option in the main menu for a quick overview of controls and tips.
+
 ## Database Setup
 
 Run the `mysql_setup.sql` script in your MySQL server (for example using phpMyAdmin) to create the default `game` database and the required tables. Each player is stored in the `players` table and individual game sessions are recorded in `game_history`.
