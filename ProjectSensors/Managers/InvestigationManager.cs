@@ -35,6 +35,7 @@ namespace ProjectSensors.Managers
                 while (gameRunning && attempts < maxAttemptsForAgent)
                 {
                     attempts++;
+                    currentAgent.OnTurnStart();
                     Console.WriteLine($"\nAttempt {attempts} of {maxAttemptsForAgent}");
                     Console.WriteLine("----------------------------------------");
 
@@ -103,8 +104,6 @@ namespace ProjectSensors.Managers
                         attempts--; 
                     }
                 }
-
-                GameHistory.Instance.DisplayHistory(PlayerSession.Username);
             }
             catch (Exception ex)
             {
