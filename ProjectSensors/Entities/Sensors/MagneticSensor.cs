@@ -12,8 +12,6 @@ namespace ProjectSensors.Entities.Sensors
 
         public override bool Activate(List<SensorType> weaknesses)
         {
-            // Magnetic sensor logic for counterattack nullification would go here
-            // For now, it simply detects if it's a weakness
             return weaknesses.Contains(Type);
         }
     }
