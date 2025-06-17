@@ -69,6 +69,9 @@ namespace ProjectSensors.Managers
                                 true,
                                 currentAgent.GetWeaknesses()));
 
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey();
+
                             gameRunning = false;
                         }
                         else if (attempts >= maxAttemptsForAgent)
@@ -84,6 +87,11 @@ namespace ProjectSensors.Managers
                                 attempts,
                                 false,
                                 currentAgent.GetWeaknesses()));
+
+                            Console.WriteLine("\nPress any key to continue...");
+                            Console.ReadKey();
+
+                            gameRunning = false;
                         }
                     }
                     catch (Exception ex)
@@ -94,10 +102,7 @@ namespace ProjectSensors.Managers
                     }
                 }
 
-                if (!currentAgent.CheckIfExposed() || attempts >= maxAttemptsForAgent)
-                {
-                     GameHistory.Instance.DisplayHistory();
-                }
+                GameHistory.Instance.DisplayHistory();
             }
             catch (Exception ex)
             {
