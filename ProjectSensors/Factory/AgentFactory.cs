@@ -36,7 +36,8 @@ namespace ProjectSensors.Factories
                     return new List<SensorType> { SensorType.Audio, SensorType.Thermal };
                 case AgentRank.SquadLeader:
                      return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion };
-
+                case AgentRank.SeniorCommander:
+                    return new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse,SensorType.Signal,SensorType.Motion,SensorType.Magnetic };
                 default:
                     return Enum.GetValues(typeof(SensorType)).Cast<SensorType>().ToList();
             }
@@ -44,7 +45,6 @@ namespace ProjectSensors.Factories
 
         public static List<SensorType> GetRandomWeaknesses(List<SensorType> pool, int count)
         {
-            // Ensure count does not exceed the number of available sensors
             if (count > pool.Count)
             {
                 count = pool.Count;
@@ -52,7 +52,6 @@ namespace ProjectSensors.Factories
 
             List<SensorType> shuffledPool = new List<SensorType>(pool);
 
-            // Fisher-Yates shuffle algorithm for true randomness and uniqueness
             int n = shuffledPool.Count;
             while (n > 1)
             {
