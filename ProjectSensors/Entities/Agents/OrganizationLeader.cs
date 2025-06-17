@@ -1,4 +1,5 @@
 using ProjectSensors.Entities.AbstractClasses;
+using ProjectSensors.Factories;
 using System;
 using System.Collections.Generic;
 
