@@ -1,9 +1,9 @@
-﻿using ProjectSensors.Entities.AbstractClasses;
+using ProjectSensors.Entities.AbstractClasses;
 using ProjectSensors.Factories;
 using ProjectSensors.Tools;
+using ProjectSensors.Enums;
 using System;
 using System.Collections.Generic;
-
 namespace ProjectSensors.Managers
 {
     public class InvestigationManager
@@ -11,13 +11,21 @@ namespace ProjectSensors.Managers
         private IranianAgent currentAgent;
         private bool gameRunning = true;
         private int attempts;
-        private List<SensorType> _currentSessionUsedSensors;
+        private readonly List<SensorType> _currentSessionUsedSensors;
+        private readonly Difficulty _difficulty;
+        private int _budget;
+        private readonly int _timeLimit;
+        private bool _comboGuessed;
 
-        public InvestigationManager(IranianAgent agent)
+        public InvestigationManager(IranianAgent agent, Difficulty difficulty = Difficulty.Medium)
         {
             currentAgent = agent;
+            _difficulty = difficulty;
             attempts = 0;
             _currentSessionUsedSensors = new List<SensorType>();
+            _budget = difficulty == Difficulty.Easy ? 150 : difficulty == Difficulty.Medium ? 100 : 70;
+            _timeLimit = difficulty == Difficulty.Hard ? 5 : 10;
+            _comboGuessed = false;
         }
 
         public void StartGame()
@@ -27,6 +35,12 @@ namespace ProjectSensors.Managers
             Console.WriteLine($"Target: {currentAgent.Rank}");
             Console.WriteLine($"Required Sensors: {GetRequiredSensorsCount()}");
             Console.WriteLine("----------------------------------------");
+
+            GameLogger.Clear();
+            WeatherService.GenerateWeather();
+            Console.WriteLine($"Weather Today: {WeatherService.CurrentWeather}");
+            RunPreMissionPuzzle();
+            Console.WriteLine($"Starting Budget: {_budget}");
 
             int maxAttemptsForAgent = (currentAgent.Rank == AgentRank.FootSoldier) ? 5 : 10;
 
@@ -41,24 +55,65 @@ namespace ProjectSensors.Managers
 
                     MenuManager.PrintSensorOptions(currentAgent.Rank);
 
-                    int choice = InputHelper.GetNumber("\nEnter sensor number:");
+                    bool timed;
+                    int choice = InputHelper.GetNumberWithTimeout("\nEnter sensor number (0 to guess combo):", _timeLimit, out timed);
+                    if (timed)
+                    {
+                        Console.WriteLine("Time ran out for this turn!");
+                        continue;
+                    }
+
+                    if (choice == 0 && !_comboGuessed)
+                    {
+                        HandleComboGuess();
+                        continue;
+                    }
+
                     SensorType selectedType = MenuManager.GetSensorTypeByChoice(choice);
 
+                    if (_currentSessionUsedSensors.Contains(selectedType))
+                    {
+                        Console.WriteLine("Sensor type already used this game.");
+                        continue;
+                    }
+
+                    int cost = MenuManager.GetSensorCost(selectedType);
+                    if (_budget - cost < 0)
+                    {
+                        Console.WriteLine("Not enough budget for this sensor.");
+                        continue;
+                    }
+                    _budget -= cost;
+                    Console.WriteLine($"Budget remaining: {_budget}");
+                    
                     try
                     {
                         Sensor sensor = SensorsFactory.CreateSensor(selectedType);
                         currentAgent.AddSensor(sensor);
                         _currentSessionUsedSensors.Add(selectedType);
+                        GameLogger.Log($"Turn {attempts}: Used {selectedType}");
 
                         int correct = currentAgent.Activate();
                         int required = GetRequiredSensorsCount();
+                        GameLogger.Log($"Matched {correct}/{required}");
                         Console.WriteLine($"\nMatched sensors: {correct}/{required}");
+
+                        Console.Write("Side intel mission for 10 credits? (y/n): ");
+                        string side = Console.ReadLine();
+                        if (side.Equals("y", StringComparison.OrdinalIgnoreCase) && _budget >= 10)
+                        {
+                            _budget -= 10;
+                            var weak = currentAgent.GetWeaknesses()[new Random().Next(currentAgent.GetWeaknesses().Count)];
+                            Console.WriteLine($"Intel reveals one weakness: {weak}");
+                            GameLogger.Log($"Intel revealed {weak}");
+                        }
 
                         if (currentAgent.CheckIfExposed())
                         {
                             Console.WriteLine("\n=== SUCCESS! ===");
                             Console.WriteLine($"Agent {currentAgent.Rank} has been exposed!");
                             Console.WriteLine($"It took you {attempts} attempts.");
+                            GameLogger.Log("Game won");
 
                             int baseScore = currentAgent.Rank == AgentRank.FootSoldier ? 100 : 200;
                             int score = baseScore / attempts;
@@ -84,7 +139,10 @@ namespace ProjectSensors.Managers
                             }
 
                             Console.WriteLine("\nPress any key to continue...");
+                            GameLogger.Save($"game_log_{DateTime.Now:yyyyMMddHHmmss}.txt");
                             Console.ReadKey();
+
+                            StartTraining();
 
                             gameRunning = false;
                         }
@@ -93,6 +151,7 @@ namespace ProjectSensors.Managers
                             Console.WriteLine("\n=== GAME OVER ===");
                             Console.WriteLine("You've run out of attempts!");
                             Console.WriteLine($"The {currentAgent.Rank} has escaped.");
+                            GameLogger.Log("Game lost");
 
                             GameHistory.Instance.AddSession(new GameSession(
                                 PlayerSession.Username,
@@ -104,6 +163,7 @@ namespace ProjectSensors.Managers
                                 currentAgent.GetWeaknesses()));
 
                             Console.WriteLine("\nPress any key to continue...");
+                            GameLogger.Save($"game_log_{DateTime.Now:yyyyMMddHHmmss}.txt");
                             Console.ReadKey();
 
                             gameRunning = false;
@@ -144,6 +204,59 @@ namespace ProjectSensors.Managers
         public void Run()
         {
             StartGame();
+        }
+
+        private void RunPreMissionPuzzle()
+        {
+            Random rnd = new Random();
+            int a = rnd.Next(1, 10);
+            int b = rnd.Next(1, 10);
+            Console.Write($"Solve to gain bonus credits: {a} + {b} = ");
+            string input = Console.ReadLine();
+            if (int.TryParse(input, out int result) && result == a + b)
+            {
+                Console.WriteLine("Correct! Bonus 20 credits added.");
+                _budget += 20;
+            }
+            else
+            {
+                Console.WriteLine("Wrong answer. No bonus.");
+            }
+        }
+
+        private void StartTraining()
+        {
+            Console.WriteLine("Training session: guess any weakness to practice.");
+            string inp = Console.ReadLine();
+            Console.WriteLine("Training over. Better luck next time.");
+        }
+
+        private void HandleComboGuess()
+        {
+            Console.WriteLine("Enter your guess for the full weakness combo separated by commas:");
+            string input = Console.ReadLine();
+            var parts = input.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            var guess = new List<SensorType>();
+            foreach (var p in parts)
+            {
+                if (Enum.TryParse(p.Trim(), true, out SensorType t))
+                    guess.Add(t);
+            }
+            var actual = currentAgent.GetWeaknesses();
+            if (guess.Count == actual.Count && !guess.Except(actual).Any())
+            {
+                Console.WriteLine("Amazing! You exposed the agent!");
+                GameLogger.Log("Full combo guessed correctly");
+                currentAgent.ResetSensorsAndWeaknessList();
+                // mark as exposed
+                typeof(IranianAgent).GetProperty("IsExposed").SetValue(currentAgent, true);
+            }
+            else
+            {
+                Console.WriteLine("Wrong guess!");
+                GameLogger.Log("Failed combo guess");
+            }
+            _comboGuessed = true;
         }
     }
 }

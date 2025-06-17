@@ -16,5 +16,21 @@ namespace ProjectSensors.Tools
             }
             return number;
         }
+
+        public static int GetNumberWithTimeout(string message, int seconds, out bool timedOut)
+        {
+            DateTime start = DateTime.Now;
+            Console.Write(message + " ");
+            string input = Console.ReadLine();
+            timedOut = (DateTime.Now - start).TotalSeconds > seconds;
+            int number;
+            while (!int.TryParse(input, out number))
+            {
+                Console.Write("Invalid input. Try again: ");
+                input = Console.ReadLine();
+                timedOut = (DateTime.Now - start).TotalSeconds > seconds;
+            }
+            return number;
+        }
     }
 }

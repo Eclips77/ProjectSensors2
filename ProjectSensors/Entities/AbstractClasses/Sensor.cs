@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using ProjectSensors.Tools;
 
 namespace ProjectSensors.Entities.AbstractClasses
 {
@@ -15,6 +16,9 @@ namespace ProjectSensors.Entities.AbstractClasses
 
         public virtual bool Activate(List<SensorType> weaknesses)
         {
+            if (!WeatherService.IsSensorEffective(Type))
+                return false;
+
             return weaknesses.Contains(Type);
         }
     }

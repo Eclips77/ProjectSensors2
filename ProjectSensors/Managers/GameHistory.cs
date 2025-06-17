@@ -78,6 +78,8 @@ namespace ProjectSensors.Managers
             }
             int gamesPlayed = entries.Count;
             int totalScore = 0;
+            int totalTurns = 0;
+            int victories = 0;
             var agentsExposed = new Dictionary<AgentRank, int>();
             var sensorsUsed = new Dictionary<SensorType, int>();
 
@@ -88,9 +90,13 @@ namespace ProjectSensors.Managers
                     if (!agentsExposed.ContainsKey(rank))
                         agentsExposed[rank] = 0;
                     if (e.Victory)
+                    {
                         agentsExposed[rank]++;
+                        victories++;
+                    }
 
                     totalScore += e.Score;
+                    totalTurns += e.TurnsTaken;
                 }
 
                 foreach (var s in e.UsedSensors)
@@ -104,6 +110,13 @@ namespace ProjectSensors.Managers
             Console.WriteLine($"Total Games Played: {gamesPlayed}");
             Console.WriteLine($"Total Score: {totalScore}");
             Console.WriteLine($"Average Score: {(gamesPlayed > 0 ? totalScore / gamesPlayed : 0)}");
+            Console.WriteLine($"Success Rate: {(gamesPlayed > 0 ? (double)victories / gamesPlayed * 100 : 0):F2}%");
+            Console.WriteLine($"Average Turns: {(gamesPlayed > 0 ? totalTurns / gamesPlayed : 0)}");
+            string title = "Rookie";
+            int avgScore = gamesPlayed > 0 ? totalScore / gamesPlayed : 0;
+            if (avgScore > 150) title = "Master Investigator";
+            else if (avgScore > 80) title = "Agent Hunter";
+            Console.WriteLine($"Title: {title}");
 
             Console.WriteLine("\nAgents Exposed:");
             foreach (var agent in agentsExposed)
@@ -129,6 +142,19 @@ namespace ProjectSensors.Managers
 
             Console.WriteLine("\nPress any key to continue...");
             Console.ReadKey();
+        }
+
+        public List<GameHistoryEntry> GetAllEntries()
+        {
+            try
+            {
+                return _historyDal.GetAll();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GameHistory.GetAllEntries: {ex.Message}");
+                return new List<GameHistoryEntry>();
+            }
         }
     }
 

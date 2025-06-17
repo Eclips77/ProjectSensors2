@@ -24,6 +24,8 @@ namespace ProjectSensors.Factories
                     return new SignalSensor();
                 case SensorType.Light:
                     return new LightSensor();
+                case SensorType.Jammer:
+                    return new JammerSensor();
                 default:
                     throw new ArgumentException($"Unknown Sensor Type: {type}");
             }

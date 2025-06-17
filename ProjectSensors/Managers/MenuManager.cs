@@ -4,6 +4,7 @@ using ProjectSensors.Entities.AbstractClasses;
 using ProjectSensors.Factories;
 using ProjectSensors.Tools;
 
+using ProjectSensors.Enums;
 namespace ProjectSensors.Managers
 {
     public static class MenuManager
@@ -16,6 +17,18 @@ namespace ProjectSensors.Managers
             { 4, AgentRank.OrganizationLeader }
         };
 
+        private static readonly Dictionary<SensorType, int> sensorCosts = new Dictionary<SensorType, int>
+        {
+            { SensorType.Audio, 5 },
+            { SensorType.Thermal, 7 },
+            { SensorType.Pulse, 10 },
+            { SensorType.Magnetic, 12 },
+            { SensorType.Motion, 8 },
+            { SensorType.Signal, 15 },
+            { SensorType.Light, 20 },
+            { SensorType.Jammer, 25 }
+        };
+
         private static readonly Dictionary<int, SensorType> sensorMap = new Dictionary<int, SensorType>
         {
             { 1, SensorType.Audio },
@@ -24,7 +37,8 @@ namespace ProjectSensors.Managers
             { 4, SensorType.Magnetic },
             { 5, SensorType.Motion },
             { 6, SensorType.Signal },
-            { 7, SensorType.Light }
+            { 7, SensorType.Light },
+            { 8, SensorType.Jammer }
         };
 
         private static readonly Dictionary<AgentRank, List<SensorType>> allowedByRank = new Dictionary<AgentRank, List<SensorType>>
@@ -32,7 +46,7 @@ namespace ProjectSensors.Managers
             { AgentRank.FootSoldier, new List<SensorType> { SensorType.Audio, SensorType.Thermal } },
             { AgentRank.SquadLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion } },
             { AgentRank.SeniorCommander, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion, SensorType.Signal } },
-            { AgentRank.OrganizationLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion, SensorType.Signal, SensorType.Light } }
+            { AgentRank.OrganizationLeader, new List<SensorType> { SensorType.Audio, SensorType.Thermal, SensorType.Pulse, SensorType.Magnetic, SensorType.Motion, SensorType.Signal, SensorType.Light, SensorType.Jammer } }
         };
 
         public static bool StartApplicationLoop()
@@ -47,9 +61,11 @@ namespace ProjectSensors.Managers
                     Console.WriteLine("=== IRANIAN AGENT INVESTIGATION GAME ===");
                     Console.WriteLine("----------------------------------------");
                     Console.WriteLine("1. Start New Investigation");
-                    Console.WriteLine("2. View Game History");
-                    Console.WriteLine("3. Log Out");
-                    Console.WriteLine("4. Exit");
+                    Console.WriteLine("2. Start Parallel Investigation");
+                    Console.WriteLine("3. View Game History");
+                    Console.WriteLine("4. View Rankings");
+                    Console.WriteLine("5. Log Out");
+                    Console.WriteLine("6. Exit");
                     Console.WriteLine("----------------------------------------");
 
                     int choice = InputHelper.GetNumber("Enter your choice:");
@@ -60,6 +76,9 @@ namespace ProjectSensors.Managers
                             DisplayAgentSelectionMenu();
                             break;
                         case 2:
+                            DisplayParallelInvestigationMenu();
+                            break;
+                        case 3:
                             if (PlayerSession.IsAdmin)
                             {
                                 DisplayAdminHistoryMenu();
@@ -69,10 +88,13 @@ namespace ProjectSensors.Managers
                                 GameHistory.Instance.DisplayHistory(PlayerSession.Username);
                             }
                             break;
-                        case 3:
+                        case 4:
+                            RankingManager.DisplayRankings();
+                            break;
+                        case 5:
                             logout = true;
                             break;
-                        case 4:
+                        case 6:
                             exitApp = true;
                             break;
                         default:
@@ -118,9 +140,15 @@ namespace ProjectSensors.Managers
                 }
 
                 AgentRank selectedRank = agentOptions[choice];
+                Console.WriteLine("Choose difficulty: 1.Easy 2.Medium 3.Hard");
+                int diffChoice = InputHelper.GetNumber("Enter choice:");
+                Difficulty diff = Difficulty.Medium;
+                if (diffChoice == 1) diff = Difficulty.Easy;
+                else if (diffChoice == 3) diff = Difficulty.Hard;
+
                 var agent = AgentFactory.CreateAgent(selectedRank);
 
-                var investigation = new InvestigationManager(agent);
+                var investigation = new InvestigationManager(agent, diff);
                 investigation.Run();
             }
             catch (Exception ex)
@@ -188,6 +216,19 @@ namespace ProjectSensors.Managers
                 throw new ArgumentException("Invalid sensor choice! Please select a valid number.");
 
             return sensorMap[choice];
+        }
+
+        public static int GetSensorCost(SensorType type)
+        {
+            return sensorCosts.ContainsKey(type) ? sensorCosts[type] : 0;
+        }
+
+        private static void DisplayParallelInvestigationMenu()
+        {
+            var a1 = AgentFactory.CreateAgent(AgentRank.FootSoldier);
+            var a2 = AgentFactory.CreateAgent(AgentRank.SquadLeader);
+            var manager = new ParallelInvestigationManager(a1, a2, Difficulty.Medium);
+            manager.Run();
         }
     }
 }
