@@ -4,6 +4,7 @@ using ProjectSensors.Tools;
 using ProjectSensors.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 namespace ProjectSensors.Managers
 {
     public class InvestigationManager

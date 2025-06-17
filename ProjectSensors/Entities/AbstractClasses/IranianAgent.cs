@@ -1,5 +1,6 @@
 ﻿using ProjectSensors.Entities.AbstractClasses;
 using System.Collections.Generic;
+using System;
 using ProjectSensors.Enums;
 
 namespace ProjectSensors.Entities.AbstractClasses
