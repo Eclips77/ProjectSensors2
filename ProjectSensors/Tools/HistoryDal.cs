@@ -36,6 +36,20 @@ namespace ProjectSensors.Tools
             }
         }
 
+        private static List<SensorType> ParseSensorList(string data)
+        {
+            var list = new List<SensorType>();
+            if (string.IsNullOrWhiteSpace(data))
+                return list;
+
+            foreach (var part in data.Split(','))
+            {
+                if (Enum.TryParse(part, out SensorType t))
+                    list.Add(t);
+            }
+            return list;
+        }
+
         public List<GameHistoryEntry> GetAll()
         {
             var list = new List<GameHistoryEntry>();
@@ -50,9 +64,9 @@ namespace ProjectSensors.Tools
                         var entry = new GameHistoryEntry
                         {
                             AgentType = reader.GetString("agent_type"),
-                            WeaknessCombination = new List<SensorType>(),
-                            UsedSensors = new List<SensorType>(),
-                            CorrectSensors = new List<SensorType>(),
+                            WeaknessCombination = ParseSensorList(reader.GetString("weakness_combo")),
+                            UsedSensors = ParseSensorList(reader.GetString("used_sensors")),
+                            CorrectSensors = ParseSensorList(reader.GetString("correct_sensors")),
                             TurnsTaken = reader.GetInt32("turns_taken"),
                             Victory = reader.GetBoolean("victory"),
                             Timestamp = reader.GetDateTime("timestamp")

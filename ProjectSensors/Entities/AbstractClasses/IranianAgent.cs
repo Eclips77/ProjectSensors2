@@ -13,6 +13,11 @@ namespace ProjectSensors.Entities.AbstractClasses
         protected int TurnCounter;
         protected int ActivateCounter;
 
+        public List<SensorType> GetWeaknesses()
+        {
+            return new List<SensorType>(WeaknessCombination);
+        }
+
         protected IranianAgent(List<SensorType> weaknesses)
         {
             WeaknessCombination = weaknesses;
