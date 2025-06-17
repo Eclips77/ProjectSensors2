@@ -23,4 +23,5 @@ CREATE TABLE IF NOT EXISTS game_history (
     score INT NOT NULL,
     victory TINYINT(1) NOT NULL,
     timestamp DATETIME NOT NULL
+    FOREIGN KEY (username) REFERENCES players(username)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
