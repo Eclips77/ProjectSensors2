@@ -32,5 +32,33 @@ namespace ProjectSensors.Tools
                 Console.WriteLine($"Error in PlayerDal.EnsurePlayerExists: {ex.Message}");
             }
         }
+
+        public System.Collections.Generic.List<string> GetAllUsernames()
+        {
+            var list = new System.Collections.Generic.List<string>();
+            try
+            {
+                using (var conn = new MySqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "SELECT username FROM players";
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                list.Add(reader.GetString("username"));
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in PlayerDal.GetAllUsernames: {ex.Message}");
+            }
+            return list;
+        }
     }
 }

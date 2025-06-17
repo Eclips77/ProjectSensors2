@@ -26,4 +26,4 @@ Run the `mysql_setup.sql` script in your MySQL server (for example using phpMyAd
 
 If you upgraded from an older version and encounter errors like `Unknown column 'username'` or `Unknown column 'score'`, your existing `game_history` table is missing these fields. Run the provided `mysql_upgrade.sql` script to add the required columns and create the foreign key linking `game_history.username` to the `players` table.
 
-When starting the application you will be prompted for a username. History and scores are tracked separately for each player.
+When starting the application you will be prompted for a username. After logging in you can play, view your history or log out to switch users. A special user named `admin` can view the history of all players.
