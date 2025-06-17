@@ -25,7 +25,7 @@ namespace ProjectSensors.Managers
             attempts = 0;
             _currentSessionUsedSensors = new List<SensorType>();
             _budget = difficulty == Difficulty.Easy ? 150 : difficulty == Difficulty.Medium ? 100 : 70;
-            _timeLimit = difficulty == Difficulty.Hard ? 5 : 10;
+            _timeLimit = difficulty == Difficulty.Hard ? 10 : 20;
             _comboGuessed = false;
         }
 
@@ -253,7 +253,6 @@ namespace ProjectSensors.Managers
                 Console.WriteLine("Amazing! You exposed the agent!");
                 GameLogger.Log("Full combo guessed correctly");
                 currentAgent.ResetSensorsAndWeaknessList();
-                // mark as exposed
                 typeof(IranianAgent).GetProperty("IsExposed").SetValue(currentAgent, true);
             }
             else
