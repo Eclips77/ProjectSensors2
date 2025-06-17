@@ -20,11 +20,11 @@ namespace ProjectSensors.Entities.Agents
             if (TurnCounter > 0 && TurnCounter % 3 == 0)
             {
                 CounterAttack();
-            }
-            if (TurnCounter > 0 && TurnCounter % 10 == 0)
-            {
-                ResetSensorsAndWeaknessList();
-                Console.WriteLine("Organization Leader reset weaknesses and sensors.");
+                if (random.NextDouble() < 0.5)
+                {
+                    ResetSensorsAndWeaknessList();
+                    Console.WriteLine("Organization Leader randomly changed weaknesses!");
+                }
             }
         }
 
@@ -41,6 +41,17 @@ namespace ProjectSensors.Entities.Agents
         {
             AttachedSensors.Clear();
             WeaknessCombination = AgentFactory.GetRandomWeaknesses(AgentFactory.GetAllowedSensorTypes(Rank), GetRequiredSensors());
+        }
+
+        public override int Activate()
+        {
+            int matched = base.Activate();
+            if (!IsExposed && matched >= WeaknessCombination.Count - 1)
+            {
+                ResetSensorsAndWeaknessList();
+                Console.WriteLine("Organization Leader adapted its weaknesses!");
+            }
+            return matched;
         }
 
         private int GetRequiredSensors()

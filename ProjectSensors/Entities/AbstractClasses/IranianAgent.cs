@@ -1,5 +1,6 @@
 ﻿using ProjectSensors.Entities.AbstractClasses;
 using System.Collections.Generic;
+using ProjectSensors.Enums;
 
 namespace ProjectSensors.Entities.AbstractClasses
 
@@ -10,6 +11,7 @@ namespace ProjectSensors.Entities.AbstractClasses
         protected List<SensorType> WeaknessCombination;
         protected List<Sensor> AttachedSensors;
         public bool IsExposed { get; protected set; }
+        public AgentMood Mood { get; protected set; }
         protected int TurnCounter;
         protected int ActivateCounter;
 
@@ -25,6 +27,7 @@ namespace ProjectSensors.Entities.AbstractClasses
             IsExposed = false;
             TurnCounter = 0;
             ActivateCounter = 0;
+            Mood = AgentMood.Calm;
         }
 
         public void AddSensor(Sensor sensor)
@@ -40,6 +43,18 @@ namespace ProjectSensors.Entities.AbstractClasses
                 if (sensor.Activate(WeaknessCombination))
                     matchedTypes.Add(sensor.Type);
             }
+
+            double ratio = (double)matchedTypes.Count / WeaknessCombination.Count;
+            if (ratio >= 1)
+                Mood = AgentMood.Panicked;
+            else if (ratio >= 0.75)
+                Mood = AgentMood.Nervous;
+            else if (ratio >= 0.5)
+                Mood = AgentMood.Alert;
+            else
+                Mood = AgentMood.Calm;
+
+            Console.WriteLine($"Agent mood: {Mood}");
 
             if (matchedTypes.Count == WeaknessCombination.Count)
                 IsExposed = true;
