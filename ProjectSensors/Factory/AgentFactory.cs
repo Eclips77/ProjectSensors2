@@ -45,24 +45,21 @@ namespace ProjectSensors.Factories
 
         public static List<SensorType> GetRandomWeaknesses(List<SensorType> pool, int count)
         {
-            if (count > pool.Count)
+            var result = new List<SensorType>();
+            if (pool.Count == 0 || count <= 0)
+                return result;
+
+            int attempts = 0;
+            while (result.Count < count && attempts < 100)
             {
-                count = pool.Count;
+                var type = pool[random.Next(pool.Count)];
+                int existing = result.Count(t => t == type);
+                if (existing < 3)
+                    result.Add(type);
+                attempts++;
             }
 
-            List<SensorType> shuffledPool = new List<SensorType>(pool);
-
-            int n = shuffledPool.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = random.Next(n + 1);
-                SensorType value = shuffledPool[k];
-                shuffledPool[k] = shuffledPool[n];
-                shuffledPool[n] = value;
-            }
-
-            return shuffledPool.Take(count).ToList();
+            return result;
         }
     }
 }
