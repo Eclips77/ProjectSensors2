@@ -24,17 +24,11 @@ namespace ProjectSensors.Tools
 
         public static bool IsSensorEffective(SensorType type)
         {
-            switch (CurrentWeather)
-            {
-                case WeatherCondition.Rain:
-                    return type != SensorType.Light;
-                case WeatherCondition.Fog:
-                    return type != SensorType.Thermal;
-                case WeatherCondition.Storm:
-                    return type != SensorType.Signal;
-                default:
-                    return true;
-            }
+            // Weather effects previously disabled certain sensors and could
+            // make some missions impossible. To keep gameplay fair the
+            // weather is now purely cosmetic, so all sensors remain effective
+            // regardless of conditions.
+            return true;
         }
     }
 }

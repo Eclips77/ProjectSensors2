@@ -40,9 +40,7 @@ namespace ProjectSensors.Managers
             GameLogger.Clear();
             WeatherService.GenerateWeather();
             Console.WriteLine($"Weather Today: {WeatherService.CurrentWeather}");
-            RunPreMissionPuzzle();
             Console.WriteLine($"Starting Budget: {_budget}");
-            OfferIntelMissionAtStart();
 
             int maxAttemptsForAgent = (currentAgent.Rank == AgentRank.FootSoldier) ? 5 : 10;
 
@@ -134,10 +132,7 @@ namespace ProjectSensors.Managers
                             }
 
                             Console.WriteLine("\nPress any key to continue...");
-                            GameLogger.Save($"game_log_{DateTime.Now:yyyyMMddHHmmss}.txt");
                             Console.ReadKey();
-
-                            StartTraining();
 
                             gameRunning = false;
                         }
@@ -160,7 +155,6 @@ namespace ProjectSensors.Managers
                                 currentAgent.GetWeaknesses()));
 
                             Console.WriteLine("\nPress any key to continue...");
-                            GameLogger.Save($"game_log_{DateTime.Now:yyyyMMddHHmmss}.txt");
                             Console.ReadKey();
 
                             gameRunning = false;
@@ -203,45 +197,6 @@ namespace ProjectSensors.Managers
             StartGame();
         }
 
-        private void RunPreMissionPuzzle()
-        {
-            Random rnd = new Random();
-            int a = rnd.Next(1, 10);
-            int b = rnd.Next(1, 10);
-            Console.Write($"Solve to gain bonus credits: {a} + {b} = ");
-            string input = Console.ReadLine();
-            if (int.TryParse(input, out int result) && result == a + b)
-            {
-                Console.WriteLine("Correct! Bonus 20 credits added.");
-                _budget += 20;
-            }
-            else
-            {
-                Console.WriteLine("Wrong answer. No bonus.");
-            }
-        }
-
-        private void OfferIntelMissionAtStart()
-        {
-            Console.Write("Take an intel mission for 10 credits to reveal a weakness? (y/n): ");
-            string answer = Console.ReadLine();
-            if (answer.Equals("y", StringComparison.OrdinalIgnoreCase) && _budget >= 10)
-            {
-                _budget -= 10;
-                var random = new Random();
-                var weakness = currentAgent.GetWeaknesses()[random.Next(currentAgent.GetWeaknesses().Count)];
-                Console.WriteLine($"Intel reveals one weakness: {weakness}");
-                GameLogger.Log($"Intel revealed {weakness}");
-            }
-            Console.WriteLine($"Budget remaining: {_budget}");
-        }
-
-        private void StartTraining()
-        {
-            Console.WriteLine("Training session: guess any weakness to practice.");
-            string inp = Console.ReadLine();
-            Console.WriteLine("Training over. Better luck next time.");
-        }
 
         private void HandleComboGuess()
         {
