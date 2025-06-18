@@ -42,6 +42,7 @@ namespace ProjectSensors.Managers
             Console.WriteLine($"Weather Today: {WeatherService.CurrentWeather}");
             RunPreMissionPuzzle();
             Console.WriteLine($"Starting Budget: {_budget}");
+            OfferIntelMissionAtStart();
 
             int maxAttemptsForAgent = (currentAgent.Rank == AgentRank.FootSoldier) ? 5 : 10;
 
@@ -99,15 +100,6 @@ namespace ProjectSensors.Managers
                         GameLogger.Log($"Matched {correct}/{required}");
                         Console.WriteLine($"\nMatched sensors: {correct}/{required}");
 
-                        Console.Write("Side intel mission for 10 credits? (y/n): ");
-                        string side = Console.ReadLine();
-                        if (side.Equals("y", StringComparison.OrdinalIgnoreCase) && _budget >= 10)
-                        {
-                            _budget -= 10;
-                            var weak = currentAgent.GetWeaknesses()[new Random().Next(currentAgent.GetWeaknesses().Count)];
-                            Console.WriteLine($"Intel reveals one weakness: {weak}");
-                            GameLogger.Log($"Intel revealed {weak}");
-                        }
 
                         if (currentAgent.CheckIfExposed())
                         {
@@ -227,6 +219,21 @@ namespace ProjectSensors.Managers
             {
                 Console.WriteLine("Wrong answer. No bonus.");
             }
+        }
+
+        private void OfferIntelMissionAtStart()
+        {
+            Console.Write("Take an intel mission for 10 credits to reveal a weakness? (y/n): ");
+            string answer = Console.ReadLine();
+            if (answer.Equals("y", StringComparison.OrdinalIgnoreCase) && _budget >= 10)
+            {
+                _budget -= 10;
+                var random = new Random();
+                var weakness = currentAgent.GetWeaknesses()[random.Next(currentAgent.GetWeaknesses().Count)];
+                Console.WriteLine($"Intel reveals one weakness: {weakness}");
+                GameLogger.Log($"Intel revealed {weakness}");
+            }
+            Console.WriteLine($"Budget remaining: {_budget}");
         }
 
         private void StartTraining()
