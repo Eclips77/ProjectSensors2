@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace ProjectSensors.Tools
 {
@@ -14,14 +13,8 @@ namespace ProjectSensors.Tools
         }
         public static void Save(string fileName)
         {
-            try
-            {
-                File.WriteAllLines(fileName, _lines);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to save log: {ex.Message}");
-            }
+            // Persisting logs to disk is no longer required. The method is
+            // kept for compatibility but intentionally does nothing.
         }
     }
 }
