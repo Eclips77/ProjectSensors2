@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ProjectSensors.Entities.Sensors
 {
-    public class JammerSensor : Sensor
+    public class JammerSensor : Sensor, IBreakableSensor
     {
         private bool _used;
         private static readonly Random rnd = new Random();
@@ -27,5 +27,7 @@ namespace ProjectSensors.Entities.Sensors
             }
             return false; // jammer does not directly detect
         }
+
+        public bool IsBroken => _used;
     }
 }

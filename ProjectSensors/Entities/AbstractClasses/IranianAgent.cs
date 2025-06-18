@@ -39,13 +39,21 @@ namespace ProjectSensors.Entities.AbstractClasses
         public virtual int Activate()
         {
             var matchedTypes = new HashSet<SensorType>();
-            foreach (Sensor sensor in AttachedSensors)
+            for (int i = AttachedSensors.Count - 1; i >= 0; i--)
             {
+                var sensor = AttachedSensors[i];
                 if (sensor.Activate(WeaknessCombination))
                     matchedTypes.Add(sensor.Type);
+
+                if (sensor is IBreakableSensor br && br.IsBroken)
+                {
+                    AttachedSensors.RemoveAt(i);
+                    Console.WriteLine($"{sensor.Name} was removed after breaking.");
+                }
             }
 
-            double ratio = (double)matchedTypes.Count / WeaknessCombination.Count;
+            int required = new HashSet<SensorType>(WeaknessCombination).Count;
+            double ratio = (double)matchedTypes.Count / required;
             if (ratio >= 1)
                 Mood = AgentMood.Panicked;
             else if (ratio >= 0.75)
@@ -76,7 +84,7 @@ namespace ProjectSensors.Entities.AbstractClasses
             Console.WriteLine($"Agent mood: {Mood}");
             Console.ForegroundColor = prev;
 
-            if (matchedTypes.Count == WeaknessCombination.Count)
+            if (matchedTypes.Count == required)
                 IsExposed = true;
 
             TurnCounter++;

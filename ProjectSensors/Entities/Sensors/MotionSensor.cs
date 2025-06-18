@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ProjectSensors.Entities.Sensors
 {
-    public class MotionSensor : Sensor
+    public class MotionSensor : Sensor, IBreakableSensor
     {
         private int usesLeft;
 
@@ -15,17 +15,18 @@ namespace ProjectSensors.Entities.Sensors
 
         public override bool Activate(List<SensorType> weaknesses)
         {
-            if (IsBroken())
+            if (IsBroken)
                 return false;
 
             usesLeft--;
+            if (IsBroken)
+            {
+                System.Console.WriteLine("Motion sensor broke!");
+            }
 
             return weaknesses.Contains(Type);
         }
 
-        public bool IsBroken()
-        {
-            return usesLeft <= 0;
-        }
+        public bool IsBroken => usesLeft <= 0;
     }
 }
