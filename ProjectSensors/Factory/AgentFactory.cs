@@ -49,14 +49,12 @@ namespace ProjectSensors.Factories
             if (pool.Count == 0 || count <= 0)
                 return result;
 
-            int attempts = 0;
-            while (result.Count < count && attempts < 100)
+            var available = new List<SensorType>(pool);
+            while (result.Count < count && available.Count > 0)
             {
-                var type = pool[random.Next(pool.Count)];
-                int existing = result.Count(t => t == type);
-                if (existing < 3)
-                    result.Add(type);
-                attempts++;
+                int index = random.Next(available.Count);
+                result.Add(available[index]);
+                available.RemoveAt(index);
             }
 
             return result;
