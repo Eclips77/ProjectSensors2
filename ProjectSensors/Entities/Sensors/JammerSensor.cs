@@ -25,7 +25,7 @@ namespace ProjectSensors.Entities.Sensors
                 weaknesses.RemoveAt(index);
                 Console.WriteLine("Jammer sensor disabled one of the agent weaknesses!");
             }
-            return false; // jammer does not directly detect
+            return false; 
         }
 
         public bool IsBroken => _used;

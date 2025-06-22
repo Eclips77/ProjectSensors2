@@ -1,7 +1,6 @@
-
-namespace ProjectSensors.Entities.AbstractClasses
+﻿namespace ProjectSensors.Entities.AbstractClasses
 {
-    public interface IBreakableSensor
+    public  interface IBreakableSensor
     {
         bool IsBroken { get; }
     }

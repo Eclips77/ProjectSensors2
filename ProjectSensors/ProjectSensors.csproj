@@ -98,6 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\AbstractClasses\IBreakableSensor.cs" />
     <Compile Include="Entities\AbstractClasses\IranianAgent.cs" />
     <Compile Include="Entities\AbstractClasses\Sensor.cs" />
     <Compile Include="Entities\GameHistoryEntry.cs" />
